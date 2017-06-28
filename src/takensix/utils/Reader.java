@@ -21,7 +21,7 @@ public class Reader {
 	}
 	
 	public static final void enter() {
-		Printer.pressEnter();
+		StringMaker.pressEnter();
 		try {
 			scan.readLine();
 		} catch (IOException e) {

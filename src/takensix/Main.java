@@ -5,6 +5,7 @@ import java.util.List;
 
 import takensix.context.BasicContext;
 import takensix.game.GameManager;
+import takensix.hiddencode.PlayerChooserAntoine;
 import takensix.player.Player;
 import takensix.player.human.PlayerChooserHumanConsole;
 import takensix.player.ia.PlayerChooserStupid;
@@ -58,8 +59,9 @@ public class Main {
 		List<Player> players = new ArrayList<>();
 		players.add(new Player("Human", new PlayerChooserHumanConsole()));
 		players.add(new Player("Stupid", new PlayerChooserStupid()));
-
-		new GameManager(new BasicContext(), players);
+		players.add(new Player("Me", new PlayerChooserAntoine()));
+		
+		new GameManager(new BasicContext(), players).launch();
 	}
 
 }

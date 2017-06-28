@@ -16,8 +16,8 @@ public class PlayContext {
 	/** The stacks statement for a certain turn. */
 	private Stacks stacks;
 
-	/** The number of players which can influences decisions. */
-	private int numberOfPlayers;
+	/** The game context. */
+	private GameContext gameContext;
 
 	/**
 	 * Instantiates a new play context.
@@ -29,10 +29,10 @@ public class PlayContext {
 	 * @param numberOfPlayers
 	 *            the number of players
 	 */
-	public PlayContext(Player player, Stacks stacks, int numberOfPlayers) {
+	public PlayContext(GameContext gameContext, Player player, Stacks stacks) {
+		this.gameContext = new GameContext(gameContext);
 		this.player = new Player(player);
 		this.stacks = new Stacks(stacks);
-		this.numberOfPlayers = numberOfPlayers;
 	}
 
 	/**
@@ -42,9 +42,9 @@ public class PlayContext {
 	 *            the play context
 	 */
 	public PlayContext(PlayContext playContext) {
+		this.gameContext = new GameContext(playContext.getGameContext());
 		this.player = new Player(playContext.getPlayer());
-		this.stacks = (Stacks) playContext.getStacks().clone();
-		this.numberOfPlayers = playContext.getNumberOfPlayers();
+		this.stacks = new Stacks(playContext.getStacks());
 	}
 
 	/**
@@ -85,23 +85,11 @@ public class PlayContext {
 		this.stacks = stacks;
 	}
 
-	/**
-	 * Gets the number of players.
-	 *
-	 * @return the number of players
-	 */
-	public int getNumberOfPlayers() {
-		return numberOfPlayers;
+	public GameContext getGameContext() {
+		return gameContext;
 	}
 
-	/**
-	 * Sets the number of players.
-	 *
-	 * @param numberOfPlayers
-	 *            the new number of players
-	 */
-	public void setNumberOfPlayers(int numberOfPlayers) {
-		this.numberOfPlayers = numberOfPlayers;
+	public void setGameContext(GameContext gameContext) {
+		this.gameContext = gameContext;
 	}
-
 }

@@ -24,6 +24,12 @@ public class Player {
 
 	/** The brain. */
 	private PlayerChooser chooser;
+	
+	/** The number of victory (finish first player). */
+	private int numberOfVictory;
+	
+	/** The number of survive (finish with acceptable score). */
+	private int numberOfSurvive;
 
 	/**
 	 * Instantiates a new player.
@@ -38,6 +44,8 @@ public class Player {
 		this.cards = new ArrayList<>();
 		this.chooser = chooser;
 		this.score = 0;
+		this.numberOfVictory = 0;
+		this.numberOfSurvive = 0;
 	}
 
 	/**
@@ -51,6 +59,8 @@ public class Player {
 		this.cards = new ArrayList<>(player.getCards());
 		this.chooser = player.getChooser();
 		this.score = player.getScore();
+		this.numberOfVictory = player.getNumberOfVictory();
+		this.numberOfSurvive = player.getNumberOfSurvive();
 	}
 
 	/**
@@ -164,6 +174,46 @@ public class Player {
 
 		this.cards.remove(minimumCard);
 		return minimumCard;
+	}
+	
+	/**
+	 * Reset score.
+	 */
+	public final void resetScore() {
+		this.score = 0;
+	}
+	
+
+	/**
+	 * Gets the number of victory.
+	 *
+	 * @return the number of victory
+	 */
+	public int getNumberOfVictory() {
+		return numberOfVictory;
+	}
+
+	/**
+	 * Adds a victory.
+	 */
+	public void addVictory() {
+		this.numberOfVictory++;
+	}
+
+	/**
+	 * Gets the number of survive.
+	 *
+	 * @return the number of survive
+	 */
+	public int getNumberOfSurvive() {
+		return numberOfSurvive;
+	}
+
+	/**
+	 * Adds a survive.
+	 */
+	public void addSurvive() {
+		this.numberOfSurvive++;
 	}
 
 	@Override

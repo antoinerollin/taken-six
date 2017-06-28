@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import takensix.utils.Randomizer;
-import takensix.utils.CardScoreMode;
 import takensix.utils.Constants;
 
 /**

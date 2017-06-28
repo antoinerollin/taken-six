@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package takensix.game;
 
 import java.util.List;
@@ -7,7 +10,8 @@ import takensix.card.Card;
 import takensix.context.GameContext;
 import takensix.context.PlayContext;
 import takensix.player.Player;
-import takensix.utils.Printer;
+import takensix.stack.Stacks;
+import takensix.utils.StringMaker;
 
 /**
  * The Class GameManager. This class handles a Game and ensure its process
@@ -43,16 +47,30 @@ public class GameManager {
 	 */
 	public GameManager(GameContext context, List<Player> players) {
 		this.context = context;
+		this.context.numberOfPlayers = players.size();
 		this.players = players;
-
-		while (!isGameFinished())
-			this.launch();
+	}
+	
+	public void launch() {
+		for (int i = 0; i < context.numberOfParty; i++)
+		{
+			this.print(StringMaker.party(i+1));
+			
+			while (!isPartyFinished()) {
+				this.launchOneGame();
+			}
+			
+			this.updatePlayersCounts();
+			this.resetPlayersScore();
+		}
+		
+		context.outputs.close();
 	}
 
 	/**
 	 * Launch one party.
 	 */
-	private void launch() {
+	private void launchOneGame() {
 		this.game = new Game(context);
 		this.addPlayers(players);
 
@@ -62,13 +80,10 @@ public class GameManager {
 		for (int i = 0; i < context.numberOfGivenCards; i++) {
 			this.playCards();
 			
-			Printer.print(game.getPlayedCardList());
+			this.print(StringMaker.playedCards(game.getPlayedCardList()));
 			
 			this.processPlayedCards();
 		}
-
-		Printer.pln("\nResults:");
-		Printer.print(game.getPlayers());
 	}
 
 	/**
@@ -79,22 +94,24 @@ public class GameManager {
 		for (int i = 0; i < game.getPlayers().size(); i++) {
 			Entry<Player, Card> playedCard = game.getLowerPlayedCard();
 			Player player = playedCard.getKey();
+			Card card = playedCard.getValue();
+			Stacks stacks = game.getStackManager().getStacks();
 
-			Printer.pln(player.getName() + " PLAYS " + playedCard.getValue().toString() + '\n');
+			this.print(StringMaker.playsCard(player, card));
 
 			// Process card on stacks and compute move's score
-			int score = game.getStackManager().receiveCard(playedCard.getValue(),
-					new PlayContext(player, game.getStackManager().getStacks(), game.getPlayers().size()));
+			int score = game.getStackManager().receiveCard(card,
+					new PlayContext(context, player, stacks));
 
-			Printer.print(game.getStackManager().getStacks());
+			this.print(StringMaker.stacks(stacks));
 			
 			// Update player's score
-			player.addScore(score);
+			if (score > 0) {
+				player.addScore(score);
+				this.print(StringMaker.getsPoints(player, score));
+			}
 
-			if (score > 0)
-				Printer.pln(player.getName() + " GETS " + score + " POINTS");
-
-			Printer.print(game.getPlayers());
+			this.print(StringMaker.players(players));
 
 			// Reader.enter();
 		}
@@ -127,7 +144,7 @@ public class GameManager {
 	private void playCards() {
 		for (Player currentPlayer : game.getPlayers()) {
 			Card playedCard = currentPlayer.playCard(
-					new PlayContext(currentPlayer, game.getStackManager().getStacks(), game.getPlayers().size()));
+					new PlayContext(context, currentPlayer, game.getStackManager().getStacks()));
 			game.addPlayedCard(currentPlayer, playedCard);
 		}
 	}
@@ -137,7 +154,7 @@ public class GameManager {
 	 *
 	 * @return true, if is game finished
 	 */
-	private boolean isGameFinished() {
+	private boolean isPartyFinished() {
 		if (this.game == null || this.players == null)
 			return false;
 
@@ -145,6 +162,34 @@ public class GameManager {
 			if (p.getScore() >= context.partyEndScore)
 				return true;
 		return false;
+	}	
+
+	/**
+	 * Resets players score.
+	 */
+	private void resetPlayersScore() {
+		for (Player p : players)
+			p.resetScore();
+	}
+
+	/**
+	 * Update players counts (victory & survive).
+	 */
+	private void updatePlayersCounts() {
+		int bestScore = Integer.MAX_VALUE;
+		Player bestPlayer = null;
+		for (Player p : players) {
+			int score = p.getScore();
+			if (score < context.partyEndScore)
+				p.addSurvive();
+			
+			if (score < bestScore) {
+				bestScore = score;
+				bestPlayer = p;
+			}
+		}
+		
+		bestPlayer.addVictory();
 	}
 
 	/**
@@ -156,5 +201,9 @@ public class GameManager {
 	public void addPlayers(List<Player> players) {
 		for (Player p : players)
 			this.game.addPlayer(p);
+	}
+	
+	private void print(String s) {
+		this.context.outputs.print(s);
 	}
 }

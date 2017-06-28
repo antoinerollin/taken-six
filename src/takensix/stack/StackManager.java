@@ -6,8 +6,9 @@ import java.util.Map.Entry;
 
 import takensix.card.Card;
 import takensix.context.PlayContext;
+import takensix.player.Player;
 import takensix.utils.Constants;
-import takensix.utils.Printer;
+import takensix.utils.StringMaker;
 
 /**
  * The Class StackManager. It handles the game's stacks.
@@ -73,7 +74,8 @@ public class StackManager {
 		if (destinationStackIndex < 0) {
 			destinationStackIndex = playContext.getPlayer().chooseStack(playContext);
 
-			Printer.pln(playContext.getPlayer() + " CHOOSES STACK {" + destinationStackIndex + "}");
+			playContext.getGameContext().outputs
+					.print(StringMaker.choosesStack(playContext.getPlayer(), destinationStackIndex));
 
 			penalty += cleanStack(this.stacks.get(destinationStackIndex));
 		}
@@ -84,8 +86,8 @@ public class StackManager {
 	}
 
 	/**
-	 * Simulate a move and return the PlayContext after move process.
-	 * It is used by the Simulator.
+	 * Simulate a move and return the PlayContext after move process. It is used
+	 * by the Simulator.
 	 *
 	 * @param playContext
 	 *            the play context
@@ -96,9 +98,17 @@ public class StackManager {
 	public PlayContext simulate(PlayContext playContext, Card card) {
 		int penalty = 0;
 		int destinationStackIndex = getStackIndexForCard(card);
+
+		if (destinationStackIndex < 0) {
+			destinationStackIndex = playContext.getPlayer().chooseStack(playContext);
+			penalty += cleanStack(this.stacks.get(destinationStackIndex));
+		}
+
 		penalty += this.addCardToStack(card, destinationStackIndex);
 
-		playContext.getPlayer().addScore(penalty);
+		Player player = playContext.getPlayer();
+		player.addScore(penalty);
+		player.getCards().remove(card);
 
 		return playContext;
 	}
@@ -168,7 +178,7 @@ public class StackManager {
 	 *            the card played
 	 * @return the stack index
 	 */
-	private int getStackIndexForCard(Card card) {
+	public int getStackIndexForCard(Card card) {
 		int bestStackIndex = -1;
 		int bestStackCardNumber = -100;
 

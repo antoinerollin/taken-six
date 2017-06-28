@@ -48,4 +48,26 @@ public interface PlayerChooser {
 	 * @return the stack index to get (begins at 1)
 	 */
 	int chooseStack(PlayContext playContext);
+	
+	/**
+	 * Write a string into outputs.
+	 * @param playContext
+	 * @param s
+	 */
+	default void print(PlayContext playContext, String s){
+		String template = "[" + playContext.getPlayer().getName() + "] ";
+		s = s.trim().replaceAll("\n", "\n"+template);
+		playContext.getGameContext().outputs.printDebug(template + s);
+	}
+	
+	/**
+	 * Write a line into outputs.
+	 * @param playContext
+	 * @param s
+	 */
+	default void println(PlayContext playContext, String s){
+		String template = "[" + playContext.getPlayer().getName() + "] ";
+		s = s.trim().replaceAll("\n", "\n"+template);
+		playContext.getGameContext().outputs.printlnDebug(template + s);
+	}
 }
