@@ -8,6 +8,7 @@ tomcat
 # Default excludes
 #
 hiddencode/
+log.txt
 
 # Binaries
 *.7z
