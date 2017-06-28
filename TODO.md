@@ -8,5 +8,5 @@
 * Add numberOfGame to GameContext
 * Count number of player's victory
 * Console Chooser for stack selection
-* Add last played cards and GameContext in PlayContext
+* Add history of played cards and GameContext in PlayContext
 * Add example for Simulator.computeDistance
