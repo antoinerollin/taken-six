@@ -5,16 +5,41 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import takensix.card.Card;
+import takensix.card.PlayedCardCollection;
+import takensix.context.GameContext;
 import takensix.player.Player;
 import takensix.stack.Stacks;
 
 public class StringMaker {
 	public final static String SEPARATOR = "------------------------\n";
+	public final static String CONSOLE_INPUT_SYMBOL = "$>";
+
 	
 	public static String players(List<Player> players) {
 		String str = "[PLAYERS & SCORES]\n";
 		for (Player p : players)
 			str += p.toString() + "\n";
+		return separate(str);
+	}
+	
+	public static String scores(List<Player> players, GameContext gameContext) {
+		String str = "[SCORES]\n\n";
+		
+		int partyEndScore = gameContext.partyEndScore;
+		str	+= "VICTORY : when someone has reached " + partyEndScore + " points and you have the lowest amount of points and lower than " + partyEndScore + " points\n";
+		str	+= "BEST : when someone has reached " + partyEndScore + " points and you have the lowest amount of points\n";
+		str	+= "SURVIVE : when someone has reached " + partyEndScore + " points and you have less than " + partyEndScore + " points\n\n";
+		str	+= "FATALITY : when someone has reached " + partyEndScore + " points and you don't have any point\n\n";
+		
+		int numberOfParty = gameContext.numberOfParty;
+		for (Player p : players)
+			str += p.getName() 
+			+ " [VICTORIES: " + p.getNumberOfVictory() + "/" + numberOfParty  
+			+ " | BEST: " + p.getNumberOfBestScore() + "/" + numberOfParty
+			+ " | SURVIVES: " + p.getNumberOfSurvive() + "/" + numberOfParty
+			+ " | FATALITIES: " + p.getNumberOfFatality() + "/" + numberOfParty
+			+ "]\n";
+		
 		return separate(str);
 	}
 	
@@ -44,12 +69,12 @@ public class StringMaker {
 	}
 	
 	public static String askCard(List<Card> playerCards) {
-		String str = "";
+		String str = "[YOUR CARDS]\n";
 		int size = playerCards.size();
 		for (int i = 1; i <= size; i++)
 			str += i + ": " + playerCards.get(i-1).toString() + "\n";
 		str += "Choose a card ? [1-"+size+"]\n";
-		return str + "$> ";
+		return str + CONSOLE_INPUT_SYMBOL;
 	}
 
 	public static String pressEnter() {
@@ -69,6 +94,37 @@ public class StringMaker {
 	}
 
 	public static String party(int i) {
-		return separate(separate("\tPARTY " + i + "\n", "*", 23), "-", 23) + "\n";
+		return separate("\tPARTY " + i + "\n", "*", 23) + "\n";
+	}
+
+	public static String serving() {
+		return separate("SERVING CARDS\n");
+	}
+
+	public static String removeLast(String s, String toRemove) {
+		if (!s.contains(toRemove))
+			return s;
+		
+		StringBuilder sb = new StringBuilder(s);
+		int l = sb.lastIndexOf(toRemove);
+		return s.substring(0, l);
+	}
+
+	public static String askStack(Stacks stacks, int suggestion) {
+		String str = StringMaker.stacks(stacks);
+		str = str.replace("{", "").replace("}", ":");
+		str += "Which stack do you want to get ? [1-"+ stacks.size() + "] (stack n°"+suggestion+ " suggested)\n";
+		return str + CONSOLE_INPUT_SYMBOL;
+	}
+
+	public static String playedCards(PlayedCardCollection playedCardHistory) {
+		String str = "[PLAYED CARDS HISTORY]\n";
+		for (Entry<String, List<Card>> entry : playedCardHistory.entrySet()){
+			str += entry.getKey() + " |";
+			for (Card c : entry.getValue())
+				str += " " + c.toString();
+			str += "\n";
+		}
+		return separate(str);
 	}
 }

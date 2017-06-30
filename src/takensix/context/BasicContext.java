@@ -16,7 +16,7 @@ public class BasicContext extends GameContext {
 	/**
 	 * Instantiates a new basic context.
 	 */
-	public BasicContext() {
-		super(10, 5, 104, 66, 1, CardScoreMode.RANDOM_MODE, OutputMode.CONSOLE_AND_FILE);
+	public BasicContext(int numberOfParty, OutputMode outputMode) {
+		super(10, 5, 104, 66, numberOfParty, CardScoreMode.RANDOM_MODE, outputMode);
 	}
 }

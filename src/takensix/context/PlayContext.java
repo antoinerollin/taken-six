@@ -1,5 +1,6 @@
 package takensix.context;
 
+import takensix.card.PlayedCardCollection;
 import takensix.player.Player;
 import takensix.stack.Stacks;
 
@@ -18,6 +19,9 @@ public class PlayContext {
 
 	/** The game context. */
 	private GameContext gameContext;
+	
+	/** The played card history. */
+	private PlayedCardCollection playedCardHistory;
 
 	/**
 	 * Instantiates a new play context.
@@ -29,10 +33,11 @@ public class PlayContext {
 	 * @param numberOfPlayers
 	 *            the number of players
 	 */
-	public PlayContext(GameContext gameContext, Player player, Stacks stacks) {
+	public PlayContext(GameContext gameContext, PlayedCardCollection playedCardCollection, Player player, Stacks stacks) {
 		this.gameContext = new GameContext(gameContext);
+		this.playedCardHistory = new PlayedCardCollection(playedCardCollection);
 		this.player = new Player(player);
-		this.stacks = new Stacks(stacks);
+		this.stacks = new Stacks(stacks);		
 	}
 
 	/**
@@ -43,6 +48,7 @@ public class PlayContext {
 	 */
 	public PlayContext(PlayContext playContext) {
 		this.gameContext = new GameContext(playContext.getGameContext());
+		this.playedCardHistory = new PlayedCardCollection(playContext.getPlayedCardHistory());
 		this.player = new Player(playContext.getPlayer());
 		this.stacks = new Stacks(playContext.getStacks());
 	}
@@ -91,5 +97,13 @@ public class PlayContext {
 
 	public void setGameContext(GameContext gameContext) {
 		this.gameContext = gameContext;
+	}
+
+	public PlayedCardCollection getPlayedCardHistory() {
+		return playedCardHistory;
+	}
+
+	public void setPlayedCardHistory(PlayedCardCollection playedCardHistory) {
+		this.playedCardHistory = playedCardHistory;
 	}
 }

@@ -4,14 +4,24 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class OutputFile implements Output {
+import takensix.utils.Clock;
+import takensix.utils.StringMaker;
 
-	private final String FILE_PATH = "log.txt";
+public class OutputFile implements Output {
+	private final String FILE_PATH = "log";
+	private final String FILE_NAME = "log.txt";
+	
 	private FileWriter file;
 	
 	public OutputFile() {
+		String date = Clock.getFormattedDateNow().replaceAll(":", "-");
 		try {
-			File f = new File(FILE_PATH);
+			File folder = new File(FILE_PATH);
+			
+			if(!folder.exists())
+				folder.mkdir();
+			
+			File f = new File(FILE_PATH + "/" + date + "_" + FILE_NAME);
 			
 			if (!f.exists())
 				f.createNewFile();
@@ -28,6 +38,13 @@ public class OutputFile implements Output {
 	 * @param s the s
 	 */
 	public void write(String s){
+		String date = "[" + Clock.getFormattedDateNow() + "] ";
+		
+		s = date + s.trim();
+		s = s.replace("\n", "\n"+date);
+		s = StringMaker.removeLast(s, "\n"+date);
+		s += "\n";
+		
 		try {
 			file.write(s);
 		} catch (IOException e) {

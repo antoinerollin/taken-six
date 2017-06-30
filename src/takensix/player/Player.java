@@ -25,12 +25,17 @@ public class Player {
 	/** The brain. */
 	private PlayerChooser chooser;
 	
-	/** The number of victory (finish first player). */
+	/** The number of victory (finish first player and score lower than GameConext.partyEndScore). */
 	private int numberOfVictory;
+	
+	/** The number of best score (finish first player). */
+	private int numberOfBestScore;
 	
 	/** The number of survive (finish with acceptable score). */
 	private int numberOfSurvive;
 
+	private int numberOfFatality;
+	
 	/**
 	 * Instantiates a new player.
 	 *
@@ -46,6 +51,8 @@ public class Player {
 		this.score = 0;
 		this.numberOfVictory = 0;
 		this.numberOfSurvive = 0;
+		this.numberOfBestScore = 0;
+		this.numberOfFatality = 0;
 	}
 
 	/**
@@ -61,6 +68,8 @@ public class Player {
 		this.score = player.getScore();
 		this.numberOfVictory = player.getNumberOfVictory();
 		this.numberOfSurvive = player.getNumberOfSurvive();
+		this.numberOfBestScore = player.getNumberOfBestScore();
+		this.numberOfFatality = player.getNumberOfFatality();
 	}
 
 	/**
@@ -216,6 +225,37 @@ public class Player {
 		this.numberOfSurvive++;
 	}
 
+	/**
+	 * Gets the number of best score.
+	 *
+	 * @return the number of best score
+	 */
+	public int getNumberOfBestScore() {
+		return numberOfBestScore;
+	}
+
+	/**
+	 * Adds a best score count.
+	 */
+	public void addBestScore() {
+		this.numberOfBestScore++;
+	}
+
+	/**
+	 * Gets the number of fatality.
+	 *
+	 * @return the number of fatality
+	 */
+	public int getNumberOfFatality() {
+		return numberOfFatality;
+	}
+
+	/**
+	 * Adds the fatality.
+	 */
+	public void addFatality() {
+		this.numberOfFatality++;
+	}
 	@Override
 	public String toString() {
 		String str = name.toUpperCase() + " [" + score + "] ";
@@ -223,4 +263,5 @@ public class Player {
 		// str += c.toString() + " ";
 		return str;
 	}
+
 }

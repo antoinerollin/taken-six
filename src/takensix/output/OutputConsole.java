@@ -1,5 +1,7 @@
 package takensix.output;
 
+import takensix.utils.StringMaker;
+
 public class OutputConsole implements Output {
 	
 	/**
@@ -8,7 +10,10 @@ public class OutputConsole implements Output {
 	 * @param s the s
 	 */
 	public void write(String s){
-		System.out.println(s);
+		if (s.trim().endsWith(StringMaker.CONSOLE_INPUT_SYMBOL))
+			System.out.print(s);
+		else
+			System.out.println(s);
 	}
 
 	@Override

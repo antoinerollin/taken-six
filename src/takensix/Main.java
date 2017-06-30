@@ -5,7 +5,7 @@ import java.util.List;
 
 import takensix.context.BasicContext;
 import takensix.game.GameManager;
-import takensix.hiddencode.PlayerChooserAntoine;
+import takensix.output.OutputMode;
 import takensix.player.Player;
 import takensix.player.human.PlayerChooserHumanConsole;
 import takensix.player.ia.PlayerChooserStupid;
@@ -53,15 +53,35 @@ public class Main {
 	 * @param args
 	 *            the arguments
 	 */
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 
-		// TODO: Put your player here
-		List<Player> players = new ArrayList<>();
-		players.add(new Player("Human", new PlayerChooserHumanConsole()));
-		players.add(new Player("Stupid", new PlayerChooserStupid()));
-		players.add(new Player("Me", new PlayerChooserAntoine()));
+		// ------------------------------------------------------------ CONFIGURE
+
+		int numberOfParty = 10;
 		
-		new GameManager(new BasicContext(), players).launch();
+		int numberOfHumanPlayer = 0;
+		int numberOfRandomPlayer = 2;
+		int numberOfPersonalPlayer = 1;
+		
+		// -------------------------------------------------------------- PREPARE
+
+		List<Player> players = new ArrayList<>();
+		
+		for (int i = 1; i <= numberOfHumanPlayer; i++)
+			players.add(new Player("Human" + i, new PlayerChooserHumanConsole()));
+		
+		for (int i = 1; i <= numberOfRandomPlayer; i++)
+			players.add(new Player("Stupid" + i, new PlayerChooserStupid()));
+
+		// TODO: Put your player here
+//		for (int i = 1; i <= numberOfPersonalPlayer; i++)
+//			players.add(new Player("Antoine", new PlayerChooserAntoine()));
+		
+		// --------------------------------------------------------------- LAUNCH
+
+		BasicContext context = new BasicContext(numberOfParty, OutputMode.CONSOLE);
+		new GameManager(context, players).launch();
 	}
 
 }

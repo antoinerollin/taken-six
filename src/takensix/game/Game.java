@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import takensix.card.Card;
 import takensix.card.CardGame;
+import takensix.card.PlayedCardCollection;
 import takensix.context.GameContext;
 import takensix.player.Player;
 import takensix.stack.StackManager;
@@ -33,6 +34,9 @@ public class Game {
 	 */
 	private Map<Player, Card> playedCardList;
 
+	/** The played cards history. */
+	private PlayedCardCollection playedCardsHistory;
+
 	/**
 	 * Instantiates a new game.
 	 *
@@ -44,6 +48,7 @@ public class Game {
 		this.stackManager = new StackManager(context.numberOfStacks);
 		this.cards = new CardGame(context.cardScoreMode, context.numberOfCards);
 		this.playedCardList = new HashMap<>();
+		this.playedCardsHistory = new PlayedCardCollection();
 	}
 
 	/**
@@ -58,7 +63,8 @@ public class Game {
 			if (minimumCard == null || minimumCard.getValue().getNumber() > entry.getValue().getNumber())
 				minimumCard = entry;
 		}
-
+		
+		this.playedCardsHistory.updatePlayedCardsHistory(minimumCard);
 		playedCardList.remove(minimumCard.getKey());
 		return minimumCard;
 	}
@@ -149,6 +155,24 @@ public class Game {
 	 */
 	public void addPlayedCard(Player player, Card card) {
 		this.playedCardList.put(player, card);
+	}
+	
+	/**
+	 * Gets the played cards history.
+	 *
+	 * @return the played cards history
+	 */
+	public PlayedCardCollection getPlayedCardsHistory() {
+		return playedCardsHistory;
+	}
+
+	/**
+	 * Sets the played cards history.
+	 *
+	 * @param playedCardsHistory the new played cards history
+	 */
+	public void setPlayedCardsHistory(PlayedCardCollection playedCardsHistory) {
+		this.playedCardsHistory = playedCardsHistory;
 	}
 
 }

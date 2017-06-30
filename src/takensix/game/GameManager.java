@@ -36,7 +36,7 @@ public class GameManager {
 
 	/** The players. */
 	List<Player> players;
-
+	
 	/**
 	 * Instantiates a new game manager and launches games.
 	 *
@@ -62,6 +62,8 @@ public class GameManager {
 			
 			this.updatePlayersCounts();
 			this.resetPlayersScore();
+			
+			this.print(StringMaker.scores(players, context));
 		}
 		
 		context.outputs.close();
@@ -101,7 +103,7 @@ public class GameManager {
 
 			// Process card on stacks and compute move's score
 			int score = game.getStackManager().receiveCard(card,
-					new PlayContext(context, player, stacks));
+					new PlayContext(context, game.getPlayedCardsHistory(), player, stacks));
 
 			this.print(StringMaker.stacks(stacks));
 			
@@ -121,6 +123,7 @@ public class GameManager {
 	 * Initializes the stacks with on card.
 	 */
 	private void serveCardsToStacks() {
+		this.print(StringMaker.serving());
 		for (int i = 0; i < context.numberOfStacks; i++) {
 			Card card = game.getCards().getOneCard();
 			this.game.getStackManager().receiveCard(card, null);
@@ -144,7 +147,7 @@ public class GameManager {
 	private void playCards() {
 		for (Player currentPlayer : game.getPlayers()) {
 			Card playedCard = currentPlayer.playCard(
-					new PlayContext(context, currentPlayer, game.getStackManager().getStacks()));
+					new PlayContext(context, game.getPlayedCardsHistory(), currentPlayer, game.getStackManager().getStacks()));
 			game.addPlayedCard(currentPlayer, playedCard);
 		}
 	}
@@ -177,19 +180,30 @@ public class GameManager {
 	 */
 	private void updatePlayersCounts() {
 		int bestScore = Integer.MAX_VALUE;
-		Player bestPlayer = null;
+		
+		// Count survive and get best score
 		for (Player p : players) {
 			int score = p.getScore();
 			if (score < context.partyEndScore)
 				p.addSurvive();
 			
-			if (score < bestScore) {
+			if (score < bestScore)
 				bestScore = score;
-				bestPlayer = p;
-			}
 		}
 		
-		bestPlayer.addVictory();
+		boolean isBestScoreAVictory = bestScore < context.partyEndScore;
+		boolean isBestScoreAFatality = bestScore == 0;
+		
+		// Update best score and victory on second time to avoid draw complexity 
+		for (Player p : players) {
+			if (p.getScore() == bestScore) {
+				p.addBestScore();
+				if (isBestScoreAVictory)
+					p.addVictory();
+				if (isBestScoreAFatality)
+					p.addFatality();
+			}
+		}
 	}
 
 	/**

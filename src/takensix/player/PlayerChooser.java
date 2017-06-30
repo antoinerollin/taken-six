@@ -12,6 +12,7 @@ public interface PlayerChooser {
 	/**
 	 * Chooses a card to play. This method is called each turn of the party.
 	 * The cards to play are contained by the Player object in the PlayContext.
+	 * Don't forget to use the Simulator. ;)
 	 * 
 	 * @param playContext
 	 *            the play context
@@ -20,8 +21,8 @@ public interface PlayerChooser {
 	Card chooseCard(PlayContext playContext);
 
 	/**
-	 * Chooses a stack when the played card is lower than the every last stacked card. This method is called each time the player plays a card
-	 * which can't be stacked on a stack.
+	 * Chooses a stack when the played card is lower than the every last stacked card. 
+	 * This method is called each time the player plays a card which can't be stacked on a stack.
 	 * 
 	 * Example : 
 	 * The stacks are filled as follow :
