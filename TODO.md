@@ -1,5 +1,7 @@
 # TODO
 
-* Console Chooser for stack selection
-* Add history of played cards and GameContext in PlayContext
+* Add move time's
+* Simplify PlayContext attributes access
+* Process PlayerChooser with timeout (process first card if timeout)
+* Improve comments
 * Add example for Simulator.computeDistance
