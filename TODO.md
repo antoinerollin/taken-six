@@ -1,4 +1,4 @@
 # TODO
 
-* Process PlayerChooser with timeout (process first card if timeout)
+* Put player's stats in another class
 * Improve comments
