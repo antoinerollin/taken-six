@@ -28,8 +28,9 @@ public class StringMaker {
 		int partyEndScore = gameContext.partyEndScore;
 		str	+= "VICTORY : when someone has reached " + partyEndScore + " points and you have the lowest amount of points and lower than " + partyEndScore + " points\n";
 		str	+= "BEST : when someone has reached " + partyEndScore + " points and you have the lowest amount of points\n";
-		str	+= "SURVIVE : when someone has reached " + partyEndScore + " points and you have less than " + partyEndScore + " points\n\n";
-		str	+= "FATALITY : when someone has reached " + partyEndScore + " points and you don't have any point\n\n";
+		str	+= "SURVIVE : when someone has reached " + partyEndScore + " points and you have less than " + partyEndScore + " points\n";
+		str	+= "FATALITY : when someone has reached " + partyEndScore + " points and you don't have any point\n";
+		str	+= "REFLECTION : average time before player submit a card\n\n";
 		
 		int numberOfParty = gameContext.numberOfParty;
 		for (Player p : players)
@@ -38,7 +39,24 @@ public class StringMaker {
 			+ " | BEST: " + p.getNumberOfBestScore() + "/" + numberOfParty
 			+ " | SURVIVES: " + p.getNumberOfSurvive() + "/" + numberOfParty
 			+ " | FATALITIES: " + p.getNumberOfFatality() + "/" + numberOfParty
+			+ " | REFLECTION: " + p.getAveragePlayTime() + "ms"
 			+ "]\n";
+		
+		return separate(str);
+	}
+	
+	public static String statistics(Map<String, List<Player>> stats) {
+		String str = "[STATISTICS]\n\n";
+		
+		final String joinSymbol = " & ";
+		for (Entry<String, List<Player>> e : stats.entrySet()){
+			final List<Player> value = e.getValue();
+			str += getStatisticTitle(e.getKey(), value) + " : ";
+			for (Player p : value)
+				str += p.getName() + joinSymbol;
+			str = StringMaker.removeLast(str, joinSymbol);
+			str += "\n";
+		}
 		
 		return separate(str);
 	}
@@ -51,7 +69,8 @@ public class StringMaker {
 	}
 	
 	public static String playsCard(Player player, Card card) {
-		return player.getName() + " PLAYS " + card.toString() + '\n';
+		String str = player.getName() + " PLAYS " + card.toString() + '\n';
+		return separate(str);
 	}
 	
 	public static String getsPoints(Player player, int points){
@@ -126,5 +145,9 @@ public class StringMaker {
 			str += "\n";
 		}
 		return separate(str);
+	}
+	
+	private static String getStatisticTitle(String str, List<Player> bestVictoryPlayers) {
+		return str + (bestVictoryPlayers.size() > 1 ? 'S' : "");
 	}
 }

@@ -1,10 +1,12 @@
 package takensix.player;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import takensix.card.Card;
 import takensix.context.PlayContext;
+import takensix.utils.Clock;
 
 /**
  * The Class Player. A Player has a name, a list of cards to play, a score and
@@ -34,7 +36,11 @@ public class Player {
 	/** The number of survive (finish with acceptable score). */
 	private int numberOfSurvive;
 
+	/** The number of fatality (finish with 0 point). */
 	private int numberOfFatality;
+	
+	/** The reflection times. */
+	private List<Long> playTimes;
 	
 	/**
 	 * Instantiates a new player.
@@ -53,6 +59,7 @@ public class Player {
 		this.numberOfSurvive = 0;
 		this.numberOfBestScore = 0;
 		this.numberOfFatality = 0;
+		this.playTimes = new ArrayList<>();
 	}
 
 	/**
@@ -70,6 +77,7 @@ public class Player {
 		this.numberOfSurvive = player.getNumberOfSurvive();
 		this.numberOfBestScore = player.getNumberOfBestScore();
 		this.numberOfFatality = player.getNumberOfFatality();
+		this.playTimes = player.getPlayTimes();
 	}
 
 	/**
@@ -82,7 +90,12 @@ public class Player {
 	 * @return the card
 	 */
 	public final Card playCard(PlayContext playContext) {
+		Date t1 = Clock.getDateNow();
 		Card playedCard = chooser.chooseCard(playContext);
+		Date t2 = Clock.getDateNow();
+		
+		this.addPlayTime(Clock.getDateDiff(t1, t2));
+		
 		this.cards.remove(playedCard);
 
 		return playedCard;
@@ -256,6 +269,38 @@ public class Player {
 	public void addFatality() {
 		this.numberOfFatality++;
 	}
+
+	/**
+	 * Adds the play time.
+	 *
+	 * @param playTime the play time
+	 */
+	private void addPlayTime(Long playTime) {
+		this.playTimes.add(playTime);
+	}
+	
+	/**
+	 * Gets the average play time.
+	 *
+	 * @return the average play time
+	 */
+	public long getAveragePlayTime(){
+		Long sum = 0L;
+		for (Long l : this.playTimes)
+			sum += l;
+		
+		return sum / this.playTimes.size();
+	}
+	
+	/**
+	 * Gets the play times.
+	 *
+	 * @return the play times
+	 */
+	public List<Long> getPlayTimes() {
+		return this.playTimes;
+	}
+
 	@Override
 	public String toString() {
 		String str = name.toUpperCase() + " [" + score + "] ";
@@ -263,5 +308,4 @@ public class Player {
 		// str += c.toString() + " ";
 		return str;
 	}
-
 }

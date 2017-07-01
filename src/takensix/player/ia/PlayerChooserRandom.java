@@ -8,7 +8,7 @@ import takensix.card.Card;
 import takensix.context.PlayContext;
 import takensix.player.PlayerChooser;
 
-public class PlayerChooserStupid implements PlayerChooser {
+public class PlayerChooserRandom implements PlayerChooser {
 
 	@Override
 	public Card chooseCard(PlayContext playContext) {

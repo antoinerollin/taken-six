@@ -11,6 +11,7 @@ import takensix.context.GameContext;
 import takensix.context.PlayContext;
 import takensix.player.Player;
 import takensix.stack.Stacks;
+import takensix.utils.Counter;
 import takensix.utils.StringMaker;
 
 /**
@@ -51,10 +52,13 @@ public class GameManager {
 		this.players = players;
 	}
 	
+	/**
+	 * Launch a set of parties.
+	 */
 	public void launch() {
-		for (int i = 0; i < context.numberOfParty; i++)
+		for (int i = 1; i <= context.numberOfParty; i++)
 		{
-			this.print(StringMaker.party(i+1));
+			this.print(StringMaker.party(i));
 			
 			while (!isPartyFinished()) {
 				this.launchOneGame();
@@ -64,6 +68,7 @@ public class GameManager {
 			this.resetPlayersScore();
 			
 			this.print(StringMaker.scores(players, context));
+			this.print(StringMaker.statistics(Counter.getScoreStatistics(players)));
 		}
 		
 		context.outputs.close();

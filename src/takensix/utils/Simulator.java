@@ -28,6 +28,8 @@ public abstract class Simulator {
 	
 	/**
 	 * Computes distance between the played card and the last stack played card.
+	 * Example : if a card n°80 is meant to go on a stack where the last stacked card is n°73,
+	 * this distance is 7 (=80-73).
 	 *
 	 * @param playContext the play context
 	 * @param card the card

@@ -5,10 +5,12 @@ import java.util.List;
 
 import takensix.context.BasicContext;
 import takensix.game.GameManager;
+import takensix.hiddencode.PlayerChooserAntoine;
 import takensix.output.OutputMode;
 import takensix.player.Player;
 import takensix.player.human.PlayerChooserHumanConsole;
-import takensix.player.ia.PlayerChooserStupid;
+import takensix.player.ia.PlayerChooserRandom;
+import takensix.player.ia.PlayerChooserSimple;
 
 /**
  * The goal of the game is to get as few points as possible at the end of the
@@ -58,10 +60,11 @@ public class Main {
 
 		// ------------------------------------------------------------ CONFIGURE
 
-		int numberOfParty = 10;
+		int numberOfParty = 100;
 		
-		int numberOfHumanPlayer = 0;
-		int numberOfRandomPlayer = 2;
+		int numberOfHumanPlayer = 1;
+		int numberOfRandomPlayer = 1;
+		int numberOfSimplePlayer = 1;
 		int numberOfPersonalPlayer = 1;
 		
 		// -------------------------------------------------------------- PREPARE
@@ -72,16 +75,21 @@ public class Main {
 			players.add(new Player("Human" + i, new PlayerChooserHumanConsole()));
 		
 		for (int i = 1; i <= numberOfRandomPlayer; i++)
-			players.add(new Player("Stupid" + i, new PlayerChooserStupid()));
+			players.add(new Player("Random" + i, new PlayerChooserRandom()));
+
+		for (int i = 1; i <= numberOfSimplePlayer; i++)
+			players.add(new Player("Simple" + i, new PlayerChooserSimple()));
 
 		// TODO: Put your player here
 //		for (int i = 1; i <= numberOfPersonalPlayer; i++)
-//			players.add(new Player("Antoine", new PlayerChooserAntoine()));
-		
+//			players.add(new Player("Antoine" + i, new PlayerChooserAntoine()));
+//		
 		// --------------------------------------------------------------- LAUNCH
 
 		BasicContext context = new BasicContext(numberOfParty, OutputMode.CONSOLE);
 		new GameManager(context, players).launch();
+		
+		System.out.println("THIS IS IT");
 	}
 
 }
