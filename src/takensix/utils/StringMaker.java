@@ -45,8 +45,8 @@ public class StringMaker {
 		return separate(str);
 	}
 	
-	public static String statistics(Map<String, List<Player>> stats) {
-		String str = "[STATISTICS]\n\n";
+	public static String rewards(Map<String, List<Player>> stats) {
+		String str = "[REWARDS]\n\n";
 		
 		final String joinSymbol = " & ";
 		for (Entry<String, List<Player>> e : stats.entrySet()){

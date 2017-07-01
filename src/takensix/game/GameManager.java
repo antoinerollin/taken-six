@@ -68,7 +68,7 @@ public class GameManager {
 			this.resetPlayersScore();
 			
 			this.print(StringMaker.scores(players, context));
-			this.print(StringMaker.statistics(Counter.getScoreStatistics(players)));
+			this.print(StringMaker.rewards(Counter.getScoreRewards(players)));
 		}
 		
 		context.outputs.close();

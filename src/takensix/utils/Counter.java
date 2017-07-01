@@ -1,9 +1,9 @@
 package takensix.utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import takensix.player.Player;
 
@@ -15,8 +15,8 @@ public abstract class Counter {
 	public final static String PUNCHER_LABEL = "THE PUNCHER";
 	public final static String FLASH_LABEL = "THE FLASH";
 
-	public static Map<String, List<Player>> getScoreStatistics(List<Player> players) {
-		Map<String, List<Player>> statistics = new HashMap<>();
+	public static Map<String, List<Player>> getScoreRewards(List<Player> players) {
+		Map<String, List<Player>> statistics = new TreeMap<>();
 
 		List<Player> bestVictoryPlayers = null, bestBestScorePlayers = null, bestSurvivePlayers = null,
 				bestFatalityPlayers = null, bestPlayTimePlayers = null;

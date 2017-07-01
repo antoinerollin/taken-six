@@ -1,5 +1,8 @@
 package takensix.context;
 
+import java.util.List;
+
+import takensix.card.Card;
 import takensix.card.PlayedCardCollection;
 import takensix.player.Player;
 import takensix.stack.Stacks;
@@ -51,6 +54,24 @@ public class PlayContext {
 		this.playedCardHistory = new PlayedCardCollection(playContext.getPlayedCardHistory());
 		this.player = new Player(playContext.getPlayer());
 		this.stacks = new Stacks(playContext.getStacks());
+	}
+	
+	/**
+	 * Gets the playable cards.
+	 *
+	 * @return the playable cards
+	 */
+	public List<Card> getMyPlayableCards() {
+		return this.player.getCards();
+	}
+	
+	/**
+	 * Gets my score.
+	 *
+	 * @return my score
+	 */
+	public int getMyScore() {
+		return this.player.getScore();
 	}
 
 	/**

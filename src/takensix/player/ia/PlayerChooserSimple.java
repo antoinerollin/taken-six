@@ -23,7 +23,7 @@ public class PlayerChooserSimple implements PlayerChooser {
 		this.println(playContext, "Let me evaluate my situation");
 		
 		// Get card with the best evaluation
-		for (Card c : playContext.getPlayer().getCards()) {
+		for (Card c : playContext.getMyPlayableCards()) {
 			double score = eval(new PlayContext(playContext), c);
 						
 			if (score < bestScore) {
@@ -69,9 +69,9 @@ public class PlayerChooserSimple implements PlayerChooser {
 		distance = (double) Simulator.computeDistance(playContext, c);
 		
 		// Compute the difference between my score before and after having played the card
-		scoreDiff = -playContext.getPlayer().getScore();
+		scoreDiff = -playContext.getMyScore();
 		PlayContext playContextAfter = Simulator.simulate(playContext, c);
-		scoreDiff += playContextAfter.getPlayer().getScore();
+		scoreDiff += playContextAfter.getMyScore();
 
 		// If I get a stack 
 		if (scoreDiff > 0)
