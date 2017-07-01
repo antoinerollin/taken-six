@@ -5,12 +5,12 @@ import java.util.List;
 
 import takensix.context.BasicContext;
 import takensix.game.GameManager;
-import takensix.hiddencode.PlayerChooserAntoine;
 import takensix.output.OutputMode;
 import takensix.player.Player;
 import takensix.player.human.PlayerChooserHumanConsole;
 import takensix.player.ia.PlayerChooserRandom;
 import takensix.player.ia.PlayerChooserSimple;
+import takensix.utils.Constants;
 
 /**
  * The goal of the game is to get as few points as possible at the end of the
@@ -72,7 +72,7 @@ public class Main {
 		List<Player> players = new ArrayList<>();
 		
 		for (int i = 1; i <= numberOfHumanPlayer; i++)
-			players.add(new Player("Human" + i, new PlayerChooserHumanConsole()));
+			players.add(new Player("Human" + i, new PlayerChooserHumanConsole(), Constants.NO_TIMEOUT));
 		
 		for (int i = 1; i <= numberOfRandomPlayer; i++)
 			players.add(new Player("Random" + i, new PlayerChooserRandom()));
@@ -82,14 +82,12 @@ public class Main {
 
 		// TODO: Put your player here
 //		for (int i = 1; i <= numberOfPersonalPlayer; i++)
-//			players.add(new Player("Antoine" + i, new PlayerChooserAntoine()));
-//		
+//			players.add(new Player("Antoine" + i, new PlayerChooserAntoine(), Constants.IA_TIMEOUT));
+		
 		// --------------------------------------------------------------- LAUNCH
 
 		BasicContext context = new BasicContext(numberOfParty, OutputMode.CONSOLE);
 		new GameManager(context, players).launch();
-		
-		System.out.println("THIS IS IT");
 	}
 
 }

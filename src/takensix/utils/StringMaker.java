@@ -73,6 +73,18 @@ public class StringMaker {
 		return separate(str);
 	}
 	
+	public static String playsCardTimeout(Player player, Card playedCard) {
+		String str = "/!\\ " + player.getName() + " DIDN'T PLAY IN TIME (" + player.getPlayTimeout()
+		+ "s max).\nSO HE RAMDOMLY PLAYED : " + playedCard;
+		return str;
+	}
+	
+	public static String selectStackTimeout(Player player, int stackIndex) {
+		String str = "/!\\ " + player.getName() + " DIDN'T PLAY IN TIME (" + player.getPlayTimeout()
+		+ "s max).\nSO HE RAMDOMLY SELECTED : {" + stackIndex + "}";
+		return str;
+	}
+	
 	public static String getsPoints(Player player, int points){
 		return player.getName() + " GETS " + points + " POINTS";
 	}

@@ -2,18 +2,18 @@ package takensix.player.ia;
 
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import takensix.card.Card;
 import takensix.context.PlayContext;
 import takensix.player.PlayerChooser;
+import takensix.utils.Randomizer;
 
 public class PlayerChooserRandom implements PlayerChooser {
 
 	@Override
 	public Card chooseCard(PlayContext playContext) {
 		List<Card> cards = playContext.getPlayer().getCards();
-		return cards.get(new Random().nextInt(cards.size()));
+		return cards.get(Randomizer.nextInt(cards.size()));
 	}
 
 	@Override

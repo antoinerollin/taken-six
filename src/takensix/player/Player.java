@@ -3,10 +3,21 @@ package takensix.player;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import takensix.card.Card;
 import takensix.context.PlayContext;
+import takensix.player.callable.PlayerPlayCardCallable;
+import takensix.player.callable.PlayerSelectStackCallable;
 import takensix.utils.Clock;
+import takensix.utils.Constants;
+import takensix.utils.Randomizer;
+import takensix.utils.StringMaker;
 
 /**
  * The Class Player. A Player has a name, a list of cards to play, a score and
@@ -26,22 +37,28 @@ public class Player {
 
 	/** The brain. */
 	private PlayerChooser chooser;
-	
-	/** The number of victory (finish first player and score lower than GameConext.partyEndScore). */
+
+	/**
+	 * The number of victory (finish first player and score lower than
+	 * GameConext.partyEndScore).
+	 */
 	private int numberOfVictory;
-	
+
 	/** The number of best score (finish first player). */
 	private int numberOfBestScore;
-	
+
 	/** The number of survive (finish with acceptable score). */
 	private int numberOfSurvive;
 
 	/** The number of fatality (finish with 0 point). */
 	private int numberOfFatality;
-	
+
 	/** The reflection times. */
 	private List<Long> playTimes;
 	
+	/** The play timeout. */
+	private int playTimeout;
+
 	/**
 	 * Instantiates a new player.
 	 *
@@ -59,7 +76,13 @@ public class Player {
 		this.numberOfSurvive = 0;
 		this.numberOfBestScore = 0;
 		this.numberOfFatality = 0;
+		this.playTimeout = Constants.IA_TIMEOUT;
 		this.playTimes = new ArrayList<>();
+	}
+	
+	public Player(String name, PlayerChooser chooser, int playTimeout) {
+		this(name, chooser);
+		this.playTimeout = playTimeout;
 	}
 
 	/**
@@ -77,6 +100,7 @@ public class Player {
 		this.numberOfSurvive = player.getNumberOfSurvive();
 		this.numberOfBestScore = player.getNumberOfBestScore();
 		this.numberOfFatality = player.getNumberOfFatality();
+		this.playTimeout = player.getPlayTimeout();
 		this.playTimes = player.getPlayTimes();
 	}
 
@@ -90,12 +114,23 @@ public class Player {
 	 * @return the card
 	 */
 	public final Card playCard(PlayContext playContext) {
-		Date t1 = Clock.getDateNow();
-		Card playedCard = chooser.chooseCard(playContext);
-		Date t2 = Clock.getDateNow();
-		
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Future<Card> future = executor.submit(new PlayerPlayCardCallable(chooser, playContext));
+		Card playedCard = null;
+
+		Date t1 = Clock.getDateNow(), t2;
+
+		try {
+			playedCard = future.get(playTimeout, TimeUnit.SECONDS);
+			t2 = Clock.getDateNow();
+		} catch (TimeoutException | InterruptedException | ExecutionException e) {
+			t2 = Clock.getDateNow();
+			playedCard = this.cards.get(Randomizer.nextInt(cards.size()));
+			print(playContext, StringMaker.playsCardTimeout(this, playedCard));
+		}
+				
+		executor.shutdownNow();
 		this.addPlayTime(Clock.getDateDiff(t1, t2));
-		
 		this.cards.remove(playedCard);
 
 		return playedCard;
@@ -109,7 +144,17 @@ public class Player {
 	 * @return the stack index
 	 */
 	public int chooseStack(PlayContext playContext) {
-		return this.chooser.chooseStack(playContext);
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Future<Integer> future = executor.submit(new PlayerSelectStackCallable(chooser, playContext));
+		int stackIndex = -1;
+		try {
+			stackIndex = future.get(playTimeout, TimeUnit.SECONDS);
+		} catch (TimeoutException | InterruptedException | ExecutionException e) {
+			stackIndex = Randomizer.nextInt(1, playContext.getGameContext().numberOfStacks);
+			print(playContext, StringMaker.selectStackTimeout(this, stackIndex));
+		}
+		
+		return stackIndex;
 	}
 
 	/**
@@ -197,14 +242,13 @@ public class Player {
 		this.cards.remove(minimumCard);
 		return minimumCard;
 	}
-	
+
 	/**
 	 * Reset score.
 	 */
 	public final void resetScore() {
 		this.score = 0;
 	}
-	
 
 	/**
 	 * Gets the number of victory.
@@ -273,25 +317,26 @@ public class Player {
 	/**
 	 * Adds the play time.
 	 *
-	 * @param playTime the play time
+	 * @param playTime
+	 *            the play time
 	 */
 	private void addPlayTime(Long playTime) {
 		this.playTimes.add(playTime);
 	}
-	
+
 	/**
 	 * Gets the average play time.
 	 *
 	 * @return the average play time
 	 */
-	public long getAveragePlayTime(){
+	public long getAveragePlayTime() {
 		Long sum = 0L;
 		for (Long l : this.playTimes)
 			sum += l;
-		
+
 		return sum / this.playTimes.size();
 	}
-	
+
 	/**
 	 * Gets the play times.
 	 *
@@ -299,6 +344,19 @@ public class Player {
 	 */
 	public List<Long> getPlayTimes() {
 		return this.playTimes;
+	}
+	
+	/**
+	 * Gets the play timeout.
+	 *
+	 * @return the play timeout
+	 */
+	public int getPlayTimeout() {
+		return playTimeout;
+	}
+	
+	private void print(PlayContext playContext, String s) {
+		playContext.getGameContext().outputs.print(s);
 	}
 
 	@Override

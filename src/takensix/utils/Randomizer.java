@@ -9,7 +9,11 @@ public class Randomizer {
 		random = new Random();
 	}
 	
-	public static int nextInt(int minIncluded, int maxIncuded) {
-		return random.nextInt(maxIncuded) + minIncluded;
+	public static int nextInt(int minIncluded, int maxIncluded) {
+		return random.nextInt(maxIncluded - minIncluded + 1) + minIncluded;
+	}
+	
+	public static int nextInt(int maxExcluded) {
+		return random.nextInt(maxExcluded);
 	}
 }
