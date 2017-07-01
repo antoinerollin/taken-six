@@ -1,8 +1,5 @@
 # TODO
 
-* Add move's time
-* Simplify PlayContext attributes access
-* Give a PlayerChooser example using every useful methods
-* Process PlayerChooser with timeout (process first card if timeout)
+* Put player's stats in another class
 * Improve comments
-* Add example for Simulator.computeDistance
+* Handle all potential exceptions
